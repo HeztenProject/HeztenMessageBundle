@@ -48,10 +48,15 @@ abstract class Thread extends BaseThread
         $this->createdBy = null;
         $this->createdByParent = null;
 
-        if($createdBy instanceof Hezten/CoreBundle/Model/TeacherInterface)
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
+        {
+            echo 'Teacher';
             $this->createdBy = $participant;
-        else if($createdBy instanceof Hezten/CoreBundle/Model/ParentsInterface)
+        }
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
             $this->createdByParent = $participant;
+        else 
+            throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
     }
     
     /**

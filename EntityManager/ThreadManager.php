@@ -27,12 +27,12 @@ class ThreadManager extends BaseThreadManager
      */
     public function getParticipantInboxThreadsQueryBuilder(ParticipantInterface $participant)
     {
-        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 $where = 'p.id = :user_id';
-        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-             $where = 'pp.id = :user_id';
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
+            $where = 'p.id = :user_id';
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
+            $where = 'pp.id = :user_id';
         else
-            throw \Exception("Unkown participant class");
+            throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
 
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
@@ -72,12 +72,12 @@ class ThreadManager extends BaseThreadManager
      */
     public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant)
     {
-        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 $where = 'p.id = :user_id';
-        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-             $where = 'pp.id = :user_id';
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
+            $where = 'p.id = :user_id';
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
+            $where = 'pp.id = :user_id';
         else
-            throw \Exception("Unkown participant class");
+            throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
 
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
@@ -113,12 +113,12 @@ class ThreadManager extends BaseThreadManager
      */
     public function findThreadsCreatedBy(ParticipantInterface $participant)
     {   
-        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
             $where = 'p.id = :user_id';
-        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
             $where = 'pp.id = :user_id';
         else
-            throw \Exception("Unkown participant class");
+            throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
 
         return $this->repository->createQueryBuilder('t')
 
@@ -144,7 +144,7 @@ class ThreadManager extends BaseThreadManager
             $timestamp = 0;
 
             foreach ($thread->getMessages() as $message) {
-                if (get_class($meta->getParticipant()) == get_class($participant)
+                if (get_class($meta->getParticipant()) == get_class($message->getSender())
                     && $participantId != $message->getSender()->getId()) {
                     $timestamp = max($timestamp, $message->getTimestamp());
                 }

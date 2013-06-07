@@ -22,12 +22,12 @@ class MessageManager extends BaseMessageManager
      */
     public function getNbUnreadMessageByParticipant(ParticipantInterface $participant)
     {
-        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+        if($participant instanceof Hezten\CoreBundle\Model\TeacherInterface)
         {
             $participantWhere = 'p.id = :participant_id';
             $senderParent = 'm.sender != :sender';
         }
-        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+        else if($participant instanceof Hezten\CoreBundle\Model\ParentsInterface)
         {
             $participantWhere = 'pp.id = :participant_id';
             $senderParent = 'm.senderParent != :sender';
