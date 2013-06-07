@@ -27,19 +27,21 @@ class ThreadManager extends BaseThreadManager
      */
     public function getParticipantInboxThreadsQueryBuilder(ParticipantInterface $participant)
     {
+        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+                 $where = 'p.id = :user_id';
+        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+             $where = 'pp.id = :user_id';
+        else
+            throw \Exception("Unkown participant class");
+
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
             ->innerJoin('tm.participant', 'p')
             ->innerJoin('tm.participantParent', 'pp')
             
             // the participant is in the thread participants
+            ->andWhere($where)
             
-            if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 ->andWhere('p.id = :user_id')
-            else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-                 ->andWhere('pp.id = :user_id')
-            else
-                throw \Exception("Unkown participant class");
 
             ->setParameter('user_id', $participant->getId())
 
@@ -70,6 +72,13 @@ class ThreadManager extends BaseThreadManager
      */
     public function getParticipantSentThreadsQueryBuilder(ParticipantInterface $participant)
     {
+        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+                 $where = 'p.id = :user_id';
+        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+             $where = 'pp.id = :user_id';
+        else
+            throw \Exception("Unkown participant class");
+
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
             ->innerJoin('tm.participant', 'p')
@@ -77,12 +86,7 @@ class ThreadManager extends BaseThreadManager
             
             // the participant is in the thread participants
             
-            if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 ->andWhere('p.id = :user_id')
-            else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-                 ->andWhere('pp.id = :user_id')
-            else
-                throw \Exception("Unkown participant class");
+           ->andWhere($where)
 
             // the thread does not contain spam or flood
             ->andWhere('t.isSpam = :isSpam')
@@ -108,20 +112,21 @@ class ThreadManager extends BaseThreadManager
      * @return array of ThreadInterface
      */
     public function findThreadsCreatedBy(ParticipantInterface $participant)
-    {
+    {   
+        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+            $where = 'p.id = :user_id';
+        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+            $where = 'pp.id = :user_id';
+        else
+            throw \Exception("Unkown participant class");
+
         return $this->repository->createQueryBuilder('t')
 
             ->innerJoin('t.createdBy', 'p')
             ->innerJoin('t.createdByParent', 'pp')
             
             // the participant is in the thread participants
-            
-            if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 ->andWhere('p.id = :user_id')
-            else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-                 ->andWhere('pp.id = :user_id')
-            else
-                throw \Exception("Unkown participant class");
+            ->andWhere($where)
 
             ->setParameter('participant_id', $participant->getId())
 

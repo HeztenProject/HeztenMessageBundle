@@ -2,6 +2,12 @@ parameters:
 #    hezten_message.example.class: Hezten\MessageBundle\Example
 
 services:
-#    hezten_message.example:
-#        class: %hezten_message.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    hezten_message.manager.message:
+       class: "Hezten\MessageBundle\EntityManager\MessageManager"
+       public: false
+       arguments: [@doctrine.orm.entity_manager, %fos_message.message_class%,%fos_message.message_meta_class%]
+
+    hezten_message.manager.thread:
+       class: "Hezten\MessageBundle\EntityManager\ThreadManager"
+       public: false
+       arguments: [@doctrine.orm.entity_manager, %fos_message.thread_class%,%fos_message.thread_meta_class%,@fos_message.message_manager]

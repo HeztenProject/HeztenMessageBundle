@@ -29,16 +29,6 @@ abstract class Thread extends BaseThread
     protected $createdByParent;
 
     /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->messages = new ArrayCollection();
-        $this->metadata = new ArrayCollection();
-        $this->participants = new ArrayCollection();
-    }
-
-    /**
      * @see FOS\MessageBundle\Model\ThreadInterface::getCreatedBy()
      */
     public function getCreatedBy()
@@ -56,7 +46,7 @@ abstract class Thread extends BaseThread
     public function setCreatedBy(ParticipantInterface $participant)
     {
         $this->createdBy = null;
-        $this->createdByParent = null
+        $this->createdByParent = null;
 
         if($createdBy instanceof Hezten/CoreBundle/Model/TeacherInterface)
             $this->createdBy = $participant;

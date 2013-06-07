@@ -3,14 +3,12 @@
 namespace Hezten\MessageBundle\Model;
 
 use FOS\MessageBundle\Model\ParticipantInterface;
-use FOS\MessageBundle\Model\MessageMetadata as BaseMessageMetadata;
+use FOS\MessageBundle\Model\ThreadMetadata as BaseThreadMetadata;
 
-abstract class MessageMetadata extends BaseMessageMetadata
+abstract class ThreadMetadata extends BaseThreadMetadata
 {
     protected $participantParent;
-
-    protected $isRead = false;
-
+    
     /**
      * @return ParticipantInterface
      */
@@ -24,7 +22,7 @@ abstract class MessageMetadata extends BaseMessageMetadata
     }
 
     /**
-     * @param ParticipantInterface $participant
+     * @param ParticipantInterface
      * @return null
      */
     public function setParticipant(ParticipantInterface $participant)

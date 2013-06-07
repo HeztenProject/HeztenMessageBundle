@@ -22,6 +22,19 @@ class MessageManager extends BaseMessageManager
      */
     public function getNbUnreadMessageByParticipant(ParticipantInterface $participant)
     {
+        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+        {
+            $participantWhere = 'p.id = :participant_id';
+            $senderParent = 'm.sender != :sender';
+        }
+        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+        {
+            $participantWhere = 'pp.id = :participant_id';
+            $senderParent = 'm.senderParent != :sender';
+        }
+        else
+            throw \Exception("Unkown participant class");
+
         $builder = $this->repository->createQueryBuilder('m');
 
         return (int)$builder
@@ -31,23 +44,10 @@ class MessageManager extends BaseMessageManager
             ->innerJoin('mm.participant', 'p')
             ->innerJoin('mm.participantParent', 'pp')
 
-            if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 ->where('p.id = :participant_id')
-            else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-                 ->where('pp.id = :participant_id')
-            else
-                throw \Exception("Unkown participant class");
-           
+                       
             ->setParameter('participant_id', $participant->getId())
 
-            
-            if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
-                 ->andWhere('m.sender != :sender')
-            else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
-                 ->andWhere('m.senderParent != :sender')
-            else
-                throw \Exception("Unkown participant class");
-
+            ->where($senderParent)
             ->setParameter('sender', $participant->getId())
 
             ->andWhere('mm.isRead = :isRead')

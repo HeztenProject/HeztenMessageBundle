@@ -3,6 +3,8 @@
 namespace Hezten\MessageBundle\Model;
 
 use FOS\MessageBundle\Model\ParticipantInterface;
+use FOS\MessageBundle\Model\ThreadInterface;
+use FOS\MessageBundle\Model\MessageMetadata as ModelMessageMetadata;
 use FOS\MessageBundle\Model\Message as BaseMessage ;
 
 class Message extends BaseMessage
@@ -33,7 +35,7 @@ class Message extends BaseMessage
     public function setSender(ParticipantInterface $sender)
     {
     	$this->sender = null;
-    	$this->senderParent = null
+    	$this->senderParent = null;
 
     	if($sender instanceof Hezten/CoreBundle/Model/TeacherInterface)
     		$this->sender = $sender;
