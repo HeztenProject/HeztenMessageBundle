@@ -22,18 +22,18 @@ class MessageManager extends BaseMessageManager
      */
     public function getNbUnreadMessageByParticipant(ParticipantInterface $participant)
     {
-        if($participant instanceof Hezten\CoreBundle\Model\TeacherInterface)
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
         {
             $participantWhere = 'p.id = :participant_id';
             $senderParent = 'm.sender != :sender';
         }
-        else if($participant instanceof Hezten\CoreBundle\Model\ParentsInterface)
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
         {
             $participantWhere = 'pp.id = :participant_id';
             $senderParent = 'm.senderParent != :sender';
         }
         else
-            throw \Exception("Unkown participant class");
+            throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
 
         $builder = $this->repository->createQueryBuilder('m');
 
@@ -41,8 +41,8 @@ class MessageManager extends BaseMessageManager
             ->select($builder->expr()->count('mm.id'))
 
             ->innerJoin('m.metadata', 'mm')
-            ->innerJoin('mm.participant', 'p')
-            ->innerJoin('mm.participantParent', 'pp')
+            ->leftJoin('mm.participant', 'p')
+            ->leftJoin('mm.participantParent', 'pp')
 
                        
             ->setParameter('participant_id', $participant->getId())

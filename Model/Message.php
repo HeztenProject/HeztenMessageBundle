@@ -35,12 +35,14 @@ class Message extends BaseMessage
     public function setSender(ParticipantInterface $sender)
     {
     	$this->sender = null;
-    	$this->senderParent = null;
+    	$this->senderParent = null; 
 
-    	if($sender instanceof Hezten/CoreBundle/Model/TeacherInterface)
-    		$this->sender = $sender;
-    	else if($sender instanceof Hezten/CoreBundle/Model/ParentsInterface)
-    		$this->senderParent = $sender;
+        if(is_subclass_of ($sender,'Hezten\CoreBundle\Model\TeacherInterface'))
+            $this->sender = $sender;
+        else if(is_subclass_of ($sender,'Hezten\CoreBundle\Model\ParentsInterface'))
+            $this->senderParent = $sender;
+        else 
+            throw new \Exception(sprintf("Unkown sender class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
     }
 
     /**

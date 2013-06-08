@@ -5,10 +5,10 @@ namespace Hezten\MessageBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use FOS\MessageBundle\Model\MessageInterface;
-use FOS\MessageBundle\Model\Thread as BaseThread;
+use Hezten\MessageBundle\Model\Thread as BaseThread;
 use FOS\MessageBundle\Model\ParticipantInterface;
 
-use FOS\MessageBundle\Model\ThreadMetadata as ModelThreadMetadata;
+use FOS\MessageBundle\Model\ThreadMetadata as ThreadMetadata;
 
 abstract class Thread extends BaseThread
 {
@@ -97,5 +97,15 @@ abstract class Thread extends BaseThread
     public function getAllMetadata()
     {
         return $this->metadata;
+    }
+
+    public function addMessage(MessageInterface $message) {
+            $this->messages->add($message);
+    }
+
+    public function addMetadata(ThreadMetadata $meta) 
+    {
+        $meta->setThread($this);
+        parent::addMetadata($meta);
     }
 }

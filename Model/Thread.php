@@ -49,10 +49,7 @@ abstract class Thread extends BaseThread
         $this->createdByParent = null;
 
         if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
-        {
-            echo 'Teacher';
-            $this->createdBy = $participant;
-        }
+            $this->createdBy = $participant;            
         else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
             $this->createdByParent = $participant;
         else 

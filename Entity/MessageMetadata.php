@@ -2,7 +2,7 @@
 
 namespace Hezten\MessageBundle\Entity;
 
-use FOS\MessageBundle\Model\MessageMetadata as BaseMessageMetadata;
+use Hezten\MessageBundle\Model\MessageMetadata as BaseMessageMetadata;
 use FOS\MessageBundle\Model\MessageInterface;
 
 abstract class MessageMetadata extends BaseMessageMetadata

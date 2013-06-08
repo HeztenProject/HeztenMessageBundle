@@ -32,10 +32,12 @@ abstract class MessageMetadata extends BaseMessageMetadata
         $this->participant = null;
         $this->participantParent = null;
 
-        if($participant instanceof Hezten/CoreBundle/Model/TeacherInterface)
+        if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
             $this->participant = $participant;
-        else if($participant instanceof Hezten/CoreBundle/Model/ParentsInterface)
+        else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
             $this->participantParent = $participant;
+        else 
+            throw new \Exception(sprintf("Unkown sender class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));          
     }
 
 }

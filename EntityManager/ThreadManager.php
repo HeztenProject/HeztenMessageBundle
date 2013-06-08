@@ -36,8 +36,8 @@ class ThreadManager extends BaseThreadManager
 
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
-            ->innerJoin('tm.participant', 'p')
-            ->innerJoin('tm.participantParent', 'pp')
+            ->leftJoin('tm.participant', 'p')
+            ->leftJoin('tm.participantParent', 'pp')
             
             // the participant is in the thread participants
             ->andWhere($where)
@@ -81,12 +81,12 @@ class ThreadManager extends BaseThreadManager
 
         return $this->repository->createQueryBuilder('t')
             ->innerJoin('t.metadata', 'tm')
-            ->innerJoin('tm.participant', 'p')
-            ->innerJoin('tm.participantParent', 'pp')
+            ->leftJoin('tm.participant', 'p')
+            ->leftJoin('tm.participantParent', 'pp')
             
             // the participant is in the thread participants
             
-           ->andWhere($where)
+            ->andWhere($where)
 
             // the thread does not contain spam or flood
             ->andWhere('t.isSpam = :isSpam')
@@ -114,16 +114,16 @@ class ThreadManager extends BaseThreadManager
     public function findThreadsCreatedBy(ParticipantInterface $participant)
     {   
         if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\TeacherInterface'))
-            $where = 'p.id = :user_id';
+            $where = 'p.id = :participant_id';
         else if(is_subclass_of ($participant,'Hezten\CoreBundle\Model\ParentsInterface'))
-            $where = 'pp.id = :user_id';
+            $where = 'pp.id = :participant_id';
         else
             throw new \Exception(sprintf("Unkown participant class. Expected a class inheriting from ParticipantInterface '%s' given",get_class($participant)));
 
         return $this->repository->createQueryBuilder('t')
 
-            ->innerJoin('t.createdBy', 'p')
-            ->innerJoin('t.createdByParent', 'pp')
+            ->leftJoin('t.createdBy', 'p')
+            ->leftJoin('t.createdByParent', 'pp')
             
             // the participant is in the thread participants
             ->andWhere($where)
@@ -141,12 +141,14 @@ class ThreadManager extends BaseThreadManager
     {
         foreach ($thread->getAllMetadata() as $meta) {
             $participantId = $meta->getParticipant()->getId();
+            $participantClass = get_class($meta->getParticipant());
             $timestamp = 0;
 
             foreach ($thread->getMessages() as $message) {
-                if (get_class($meta->getParticipant()) == get_class($message->getSender())
-                    && $participantId != $message->getSender()->getId()) {
+                if ($participantId != $message->getSender()->getId() && $participantClass != get_class($message->getSender()))
+                {
                     $timestamp = max($timestamp, $message->getTimestamp());
+
                 }
             }
             if ($timestamp) {
